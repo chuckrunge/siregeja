@@ -1,22 +1,3 @@
-//sidacoja - A Simple Data Conversion for Java
-//Copyright (C) 2015  Chuck Runge
-//Lombard, IL.
-//CGRunge001@GMail.com
-
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either version 2
-//of the License, or (at your option) any later version.
-
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 package rptGenerator;
 
 import java.util.ArrayList;
@@ -38,21 +19,22 @@ public class Generator {
 	private int length = 0;
 	private int lineLen = 0;
 	private int spaceLen = 0;
-	private int lineCtr = 0;
-	private int pageCtr = 0;
+	public int lineCtr = 0;
+	public int pageCtr = 0;
 
-	private HashMap<String, Integer> totalsCache = new HashMap<String, Integer>();
+	public HashMap<String, Integer> totalsCache = new HashMap<String, Integer>();
+	public HashMap<String, Integer> grandTotals = new HashMap<String, Integer>();
 
-	static final String SPACES = "                                                            ";
-	//static final String SPACES = "123456789*123456789*123456789*123456789*";
+	static final String SPACES = "                                                                      ";
+//  static final String SPACES = "123456789*123456789*123456789*123456789*123456789*123456789*123456789*";
 	static final String FINAL = "final";
 	static final String PAGE = "page";
 	static final String SUBTOT = "subtot";
 
 	private String spaces;
-	private String heading1;
-	private String heading2;
-	private String heading3;
+	private String heading1 = null;
+	private String heading2 = null;
+	private String heading3 = null;
 	private String columnHeading = null;
 	private String controlBreak1 = null;
 	private String controlBreak2 = null;
@@ -60,9 +42,9 @@ public class Generator {
 	private String prevBreak1 = null;
 	private String prevBreak2 = null;
 	private String prevBreak3 = null;
-	private String footing1; //page
-	private String footing2; //total
-	private String footing3; //report
+	private String footing1 = null; //page
+	private String footing2 = null; //total
+	private String footing3 = null; //report
 	private boolean controlBreak = false;
 
 	public String getHeading1() {
@@ -134,6 +116,30 @@ public class Generator {
 
 	public void setControlBreak3(String controlBreak3) {
 		this.controlBreak3 = controlBreak3;
+	}
+
+	public int getLineCtr() {
+		return lineCtr;
+	}
+
+	public void setLineCtr(int lineCtr) {
+		this.lineCtr = lineCtr;
+	}
+
+	public int getPageCtr() {
+		return pageCtr;
+	}
+
+	public void setPageCtr(int pageCtr) {
+		this.pageCtr = pageCtr;
+	}
+
+	public HashMap<String, Integer> getTotalsCache() {
+		return totalsCache;
+	}
+
+	public void setTotalsCache(HashMap<String, Integer> totalsCache) {
+		this.totalsCache = totalsCache;
 	}
 
 	public void execRpt(RowCache cache) {
@@ -210,7 +216,8 @@ public class Generator {
 
 		 }
 		 printColumnTotals(cellListN);
-		 printFootings(FINAL);
+		 printFinalTotals(cellListN);
+	
 	}
 
 	public void addToTotal(Cell cell) {
@@ -279,6 +286,7 @@ public class Generator {
 			printHeadings();
 		}
 		if(cmd=="final" && footing3!=null) {
+			//printFinalTotals();
 			System.out.println(footing3);
 			lineCtr++;
 			System.out.println("Page "+pageCtr);
@@ -287,22 +295,25 @@ public class Generator {
 	}
 	
 	public void printColumnTotals(List<Cell> cellListN) {
-		
-		//if(columnHeading!=null) {
-		//	System.out.println(columnHeading);
-		//	lineCtr++;
-		//	return;
-		//}
-		if(cellListN!=null) {
-			System.out.println("TOTAL");
+
+		if(footing2 != null && cellListN!=null) {
+			System.out.println("Subtotal");
 			footing2 = spaces;
 			for(Cell cellN : cellListN) {
 				if(totalsCache.get(cellN.getLabel())==null) {
 					footing2 = footing2 + SPACES.substring(0,length) + spaces;
 				} else {
 					int total = totalsCache.get(cellN.getLabel());
-					//System.out.println("hit");
-					footing2 = footing2 + total + spaces;
+					String totalString = String.format("%,d", total);
+					footing2 = footing2 + totalString + spaces;
+					if(grandTotals.get(cellN.getLabel())==null) {
+						grandTotals.put(cellN.getLabel(), total);
+						totalsCache.put(cellN.getLabel(), 0);
+					} else {
+						int grand = grandTotals.get(cellN.getLabel());
+						grandTotals.put(cellN.getLabel(), (grand + total) );
+						totalsCache.put(cellN.getLabel(), 0);
+					}
 				//System.out.print(cellN.getLabel()+SPACES.substring(0,length-cellN.getLabel().length()-1)+spaces);
 				}
 			}	
@@ -312,5 +323,30 @@ public class Generator {
 		lineCtr++;
 		return;
 	}
+
+	public void printFinalTotals(List<Cell> cellListN) {
+
+		if(footing3 != null && cellListN!=null) {
+			System.out.println("GRAND TOTAL");
+			footing3 = spaces;
+			for(Cell cellN : cellListN) {
+				if(totalsCache.get(cellN.getLabel())==null) {
+					footing3 = footing3 + SPACES.substring(0,length) + spaces;
+				} else {
+					int total = grandTotals.get(cellN.getLabel());
+//					grandTotals.put(cellN.getLabel(), total);
+//					totalsCache.put(cellN.getLabel(), 0);
+					String totalString = String.format("%,d", total);
+					footing3 = footing3 + totalString + spaces;
+				//System.out.print(cellN.getLabel()+SPACES.substring(0,length-cellN.getLabel().length()-1)+spaces);
+				}
+			}	
+			System.out.println("*"+footing3);
+			lineCtr++;
+		}
+		lineCtr++;
+		return;
+	}
+
 
 }
