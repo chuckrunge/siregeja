@@ -22,8 +22,8 @@ public class Generator {
 	public int lineCtr = 0;
 	public int pageCtr = 0;
 
-	public HashMap<String, Integer> totalsCache = new HashMap<String, Integer>();
-	public HashMap<String, Integer> grandTotals = new HashMap<String, Integer>();
+	public HashMap<String, Double> totalsCache = new HashMap<String, Double>();
+	public HashMap<String, Double> grandTotals = new HashMap<String, Double>();
 
 	static final String SPACES = "                                                                      ";
 //  static final String SPACES = "123456789*123456789*123456789*123456789*123456789*123456789*123456789*";
@@ -134,11 +134,11 @@ public class Generator {
 		this.pageCtr = pageCtr;
 	}
 
-	public HashMap<String, Integer> getTotalsCache() {
+	public HashMap<String, Double> getTotalsCache() {
 		return totalsCache;
 	}
 
-	public void setTotalsCache(HashMap<String, Integer> totalsCache) {
+	public void setTotalsCache(HashMap<String, Double> totalsCache) {
 		this.totalsCache = totalsCache;
 	}
 
@@ -197,10 +197,14 @@ public class Generator {
 					 controlBreak = true;
 					 prevBreak3 = cellN.getValue();
 				 }
-				 if( cellN.getDataType().equals("Integer")) {
+				 if( cellN.getDataType().equals("Integer") ||
+		 			 cellN.getDataType().equals("Double") ) {
 					 cellTotals.add(cellN);
+					 String amountString = String.format("%,.2f", Double.valueOf(cellN.getValue()));
+					 lineSz += amountString+SPACES.substring(0,length-amountString.length()-1)+spaces;
+				 } else {
+					 lineSz += cellN.getValue()+SPACES.substring(0,length-cellN.getValue().length()-1)+spaces;
 				 }
-				 lineSz += cellN.getValue()+SPACES.substring(0,length-cellN.getValue().length()-1)+spaces;
 			 }
 			 if(controlBreak) {
 				 printColumnTotals(cellListN);
@@ -223,10 +227,11 @@ public class Generator {
 	public void addToTotal(Cell cell) {
 		
 		if( totalsCache.get(cell.getLabel()) == null) {
-			totalsCache.put(cell.getLabel(),Integer.valueOf(cell.getValue() ));
+			totalsCache.put(cell.getLabel(),Double.valueOf(cell.getValue() ));
+			//System.out.println("addToTotal: "+Double.valueOf(cell.getValue() ));
 		} else {
-			int total = totalsCache.get(cell.getLabel());
-			total+= Integer.valueOf( cell.getValue());
+			double total = totalsCache.get(cell.getLabel());
+			total+= Double.valueOf( cell.getValue());
 			totalsCache.put(cell.getLabel(),total);
 			
 		}
@@ -303,16 +308,17 @@ public class Generator {
 				if(totalsCache.get(cellN.getLabel())==null) {
 					footing2 = footing2 + SPACES.substring(0,length) + spaces;
 				} else {
-					int total = totalsCache.get(cellN.getLabel());
-					String totalString = String.format("%,d", total);
+					double total = totalsCache.get(cellN.getLabel());
+					String totalString = String.format("%,.2f", total);
+					//System.out.println(totalString);
 					footing2 = footing2 + totalString + spaces;
 					if(grandTotals.get(cellN.getLabel())==null) {
 						grandTotals.put(cellN.getLabel(), total);
-						totalsCache.put(cellN.getLabel(), 0);
+						totalsCache.put(cellN.getLabel(), 0D);
 					} else {
-						int grand = grandTotals.get(cellN.getLabel());
+						double grand = grandTotals.get(cellN.getLabel());
 						grandTotals.put(cellN.getLabel(), (grand + total) );
-						totalsCache.put(cellN.getLabel(), 0);
+						totalsCache.put(cellN.getLabel(), 0D);
 					}
 				//System.out.print(cellN.getLabel()+SPACES.substring(0,length-cellN.getLabel().length()-1)+spaces);
 				}
@@ -333,10 +339,10 @@ public class Generator {
 				if(totalsCache.get(cellN.getLabel())==null) {
 					footing3 = footing3 + SPACES.substring(0,length) + spaces;
 				} else {
-					int total = grandTotals.get(cellN.getLabel());
+					double total = grandTotals.get(cellN.getLabel());
 //					grandTotals.put(cellN.getLabel(), total);
 //					totalsCache.put(cellN.getLabel(), 0);
-					String totalString = String.format("%,d", total);
+					String totalString = String.format("%,.2f", total);
 					footing3 = footing3 + totalString + spaces;
 				//System.out.print(cellN.getLabel()+SPACES.substring(0,length-cellN.getLabel().length()-1)+spaces);
 				}

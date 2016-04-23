@@ -28,7 +28,7 @@ public class testGenerator1 {
 		assert(generator.getLineCtr()==14);
 		
 		//validate column totals
-		HashMap<String, Integer> totals = generator.getTotalsCache();
+		HashMap<String, Double> totals = generator.getTotalsCache();
 		Set<String> keys = totals.keySet();
 		for(String key: keys) {
 			if("INCOME".equals(key)) {
