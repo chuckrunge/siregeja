@@ -3,6 +3,10 @@ package rptGenerator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.sidacoja.utils.Cell;
+import com.sidacoja.utils.Row;
+import com.sidacoja.utils.RowCache;
+import com.sidacoja.utils.Sidacoja;
 
 public class Generator {
 
@@ -143,6 +147,8 @@ public class Generator {
 	}
 
 	public void execRpt(RowCache cache) {
+		//console("cache count" +cache.countSelected());
+		//console("rpt received: "+controlBreak1);
 		String lineSz = null;
 		List<Cell> cellListN = null;		
 		List<Cell> cellTotals = new ArrayList<Cell>();		
@@ -206,6 +212,7 @@ public class Generator {
 					 lineSz += cellN.getValue()+SPACES.substring(0,length-cellN.getValue().length()-1)+spaces;
 				 }
 			 }
+			 //System.out.println("controlbreak? "+controlBreak);
 			 if(controlBreak) {
 				 printColumnTotals(cellListN);
 			 	controlBreak = false;
@@ -222,6 +229,12 @@ public class Generator {
 		 printColumnTotals(cellListN);
 		 printFinalTotals(cellListN);
 	
+	}
+
+	private void console(String string) {
+		// TODO Auto-generated method stub
+		System.out.println(string);
+		
 	}
 
 	public void addToTotal(Cell cell) {
@@ -282,6 +295,7 @@ public class Generator {
 	public void printFootings(String cmd) {
 		if(cmd=="subtot" && footing2!=null) { //subtotals
 			System.out.println(footing2);
+			
 			lineCtr++;
 		}
 		if(cmd=="page" && footing1!=null) {
@@ -300,7 +314,7 @@ public class Generator {
 	}
 	
 	public void printColumnTotals(List<Cell> cellListN) {
-
+		//console("printColumnTotals");
 		if(footing2 != null && cellListN!=null) {
 			System.out.println("Subtotal");
 			footing2 = spaces;
@@ -331,7 +345,7 @@ public class Generator {
 	}
 
 	public void printFinalTotals(List<Cell> cellListN) {
-
+		//console("printFinalTotals");
 		if(footing3 != null && cellListN!=null) {
 			System.out.println("GRAND TOTAL");
 			footing3 = spaces;

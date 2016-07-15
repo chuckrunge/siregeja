@@ -4,12 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import com.sidacoja.utils.*;
+//import com.sidacoja.utils.Cell;
+//import com.sidacoja.utils.Row;
+import com.sidacoja.utils.RowCache;
+import com.sidacoja.utils.Sidacoja;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -19,11 +25,11 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import rptGenerator.Generator;
-import rptGenerator.RowCache;
+import rptGenerator.RowCacheX;
 
 	public class SpreadsheetExample {
 // implements SourceData {
-
+		
 		public RowCache processInput(String input) {
 			
 			console(input);
@@ -38,18 +44,18 @@ import rptGenerator.RowCache;
 			    HSSFWorkbook workbook = new HSSFWorkbook(file); //create workbook instance
 			    HSSFSheet sheet = workbook.getSheetAt(0); //select first worksheet
 
-		    	List<rptGenerator.Row> rows = new ArrayList<rptGenerator.Row>();
-		    	List<rptGenerator.Cell> cells = new ArrayList<rptGenerator.Cell>();
+		    	List<com.sidacoja.utils.Row> rows = new ArrayList<com.sidacoja.utils.Row>();
+		    	List<com.sidacoja.utils.Cell> cells = new ArrayList<com.sidacoja.utils.Cell>();
 				List<String> labels= new ArrayList<String>();
-	            rptGenerator.Row sRow = new rptGenerator.Row();
-				rptGenerator.Cell sCell = new rptGenerator.Cell();
+				com.sidacoja.utils.Row sRow = new com.sidacoja.utils.Row();
+				com.sidacoja.utils.Cell sCell = new com.sidacoja.utils.Cell(0, "label", "dataType", "value");
 
 			    Iterator<Row> rowIterator = sheet.iterator(); //Iterate through rows
 			    while(rowIterator.hasNext()) {
 			    	
 			        Row row = rowIterator.next();
-			        cells = new ArrayList<rptGenerator.Cell>();
-			        if(k % 1000 == 0) {
+			        cells = new ArrayList<com.sidacoja.utils.Cell>();
+			        if(k % 1000 == 0 ) {
 			        	console("row: "+k); //" cell "+i
 			        }
 			        k++;
@@ -105,18 +111,21 @@ import rptGenerator.RowCache;
 	                    		sCell.setDataType("String");		                	
 			                	break;
 			            } //end switch
+			            
 			            if(firstRow == false) {
+			            	//displayCells(cells);
 			            	cells.add(sCell);
-			            	sCell = new rptGenerator.Cell();
+			            	sCell = new com.sidacoja.utils.Cell();
 			            }
 			        } //end cell loop
 		        	i=0;
 		            if(firstRow == false) {
-		            	sRow = new rptGenerator.Row();
+		            	//displayCells(cells);
+		            	sRow = new com.sidacoja.utils.Row();
 		            	sRow.setNumber(j);
 		            	sRow.setList(cells);
 		            	rows.add(sRow);
-		            	cells = new ArrayList<rptGenerator.Cell>();
+		            	cells = new ArrayList<com.sidacoja.utils.Cell>();
 		            	j = j + 1;
 		            }
 		            else {firstRow = false;}
@@ -137,8 +146,8 @@ import rptGenerator.RowCache;
 			
 		}
 		
-		public void displayCells(List<rptGenerator.Cell> cells) {
-			for(rptGenerator.Cell cell:cells) {
+		public void displayCells(List<com.sidacoja.utils.Cell> cells) {
+			for(com.sidacoja.utils.Cell cell:cells) {
 				console(cell.toString());
 			}
 		}
@@ -150,7 +159,8 @@ import rptGenerator.RowCache;
 		public static void main(String[] args) {
 			SpreadsheetExample xSheet = new SpreadsheetExample(); 
 	    	RowCache cache = xSheet.processInput(".\\resources\\spreadsheet.XLS");
-	    	List<rptGenerator.Row> rows = cache.getList();
+	    	List<com.sidacoja.utils.Row> rows = cache.getList();
+
 	    	/*for(rptGenerator.Row row: rows) {
 	    		List<rptGenerator.Cell> cells = row.getList();
 	    		for(rptGenerator.Cell cell: cells) {
@@ -182,5 +192,15 @@ import rptGenerator.RowCache;
 				rex.printStackTrace();
 			}
 	    }
-
+		/*
+		 * loadCell is a utility method to create and load a standard cell object
+		 */
+		static public com.sidacoja.utils.Cell loadCell(String dataType, String label, int number, String value) {
+			com.sidacoja.utils.Cell cell = new com.sidacoja.utils.Cell();
+			cell.setDataType(dataType);
+			cell.setLabel(label);
+			cell.setNumber(number);
+			cell.setValue(value);
+			return cell;
+		}
 	} //end class

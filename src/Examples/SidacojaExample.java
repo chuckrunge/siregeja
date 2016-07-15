@@ -58,7 +58,7 @@ public class SidacojaExample {
 			generator.setFooting1("*");
 			generator.setFooting2("**");
 			generator.setFooting3("End of Report");
-			generator.execRpt(copyCache(cache));
+			generator.execRpt(cache); //copyCache(cache));
 
 		} catch (Exception rex) {
 			System.out.println(rex.getMessage());
@@ -67,16 +67,16 @@ public class SidacojaExample {
 
 	} // end method
 
-	public static rptGenerator.RowCache copyCache(RowCache cache) {
-		rptGenerator.RowCache genCache = new rptGenerator.RowCache();
+	public static rptGenerator.RowCacheX copyCache(RowCache cache) {
+		rptGenerator.RowCacheX genCache = new rptGenerator.RowCacheX();
 		List<Row> rowList = cache.getList();
-		List<rptGenerator.Row> rptRowList = new ArrayList<rptGenerator.Row>();
+		List<rptGenerator.RowX> rptRowList = new ArrayList<rptGenerator.RowX>();
 		for (Row row : rowList) {
-			rptGenerator.Row rptRow = new rptGenerator.Row();
+			rptGenerator.RowX rptRow = new rptGenerator.RowX();
 			List<Cell> cellList = row.getList();
-			List<rptGenerator.Cell> rptCellList = new ArrayList<rptGenerator.Cell>();
+			List<rptGenerator.CellX> rptCellList = new ArrayList<rptGenerator.CellX>();
 			for (Cell cell : cellList) {
-				rptGenerator.Cell rptCell = new rptGenerator.Cell();
+				rptGenerator.CellX rptCell = new rptGenerator.CellX();
 				if ("AGE".equals(cell.getLabel())) {
 					rptCell.setDataType("Integer");
 				} else {

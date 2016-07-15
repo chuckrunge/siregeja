@@ -10,11 +10,16 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import rptGenerator.Cell;
+import com.sidacoja.utils.Cell;
+import com.sidacoja.utils.Row;
+import com.sidacoja.utils.RowCache;
+import com.sidacoja.utils.Sidacoja;
 import rptGenerator.Generator;
-import rptGenerator.Row;
-import rptGenerator.RowCache;
+
+//import rptGenerator.CellX;
+//import rptGenerator.Generator;
+//import rptGenerator.RowX;
+//import rptGenerator.RowCacheX;
 
 public class SQLReportExample {
 	 static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";  
@@ -163,7 +168,7 @@ public static void main(String[] args)
  * loadCell is a utility method to create and load a standard cell object
  */
 static public Cell loadCell(String dataType, String label, int number, String value) {
-	Cell cell = new Cell();
+	Cell cell = null; //new Cell();
  	cell.setDataType(dataType);
  	cell.setLabel(label);
  	cell.setNumber(number);
