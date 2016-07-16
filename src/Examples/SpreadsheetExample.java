@@ -25,7 +25,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import rptGenerator.Generator;
-import rptGenerator.RowCacheX;
 
 	public class SpreadsheetExample {
 // implements SourceData {
@@ -180,8 +179,8 @@ import rptGenerator.RowCacheX;
 				generator.setHeading2(dfString);
 				generator.setHeading3(" ");
 				generator.setControlBreak1("CURRENCY1");
-				generator.setControlBreak2(null);
-				generator.setControlBreak3(null);
+				generator.setControlBreak2("*");
+				generator.setControlBreak3("*");
 				generator.setFooting1("*");
 				generator.setFooting2("**");
 				generator.setFooting3("End of Report");

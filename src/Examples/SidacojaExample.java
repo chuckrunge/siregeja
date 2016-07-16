@@ -67,16 +67,16 @@ public class SidacojaExample {
 
 	} // end method
 
-	public static rptGenerator.RowCacheX copyCache(RowCache cache) {
-		rptGenerator.RowCacheX genCache = new rptGenerator.RowCacheX();
+	public static RowCache copyCache(RowCache cache) {
+		RowCache genCache = new RowCache();
 		List<Row> rowList = cache.getList();
-		List<rptGenerator.RowX> rptRowList = new ArrayList<rptGenerator.RowX>();
+		List<Row> rptRowList = new ArrayList<Row>();
 		for (Row row : rowList) {
-			rptGenerator.RowX rptRow = new rptGenerator.RowX();
+			Row rptRow = new Row();
 			List<Cell> cellList = row.getList();
-			List<rptGenerator.CellX> rptCellList = new ArrayList<rptGenerator.CellX>();
+			List<Cell> rptCellList = new ArrayList<Cell>();
 			for (Cell cell : cellList) {
-				rptGenerator.CellX rptCell = new rptGenerator.CellX();
+				Cell rptCell = new Cell();
 				if ("AGE".equals(cell.getLabel())) {
 					rptCell.setDataType("Integer");
 				} else {
